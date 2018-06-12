@@ -23,11 +23,6 @@
     <h1>Disabled Selection box</h1>
     
     <z-select placeholder="Box is disabled" disabled>
-      <z-options v-for="(option , index) in options"
-                :key="index"
-                :label="option.label"
-                :value="option.value"
-                />
     </z-select>
 
     <h1>Disabled Selection box with default option</h1>
@@ -39,6 +34,27 @@
                 :value="option.value"
                 />
     </z-select>
+
+    <h1>Simple tag</h1>
+    <z-tag message="Hello"/>
+
+    <h1>Multiple Select</h1>
+    
+    <z-select placeholder="This is Multiple select" v-model="multiSelectionBox" multiple>
+      <z-options v-for="(option , index) in options"
+                :key="index"
+                :label="option.label"
+                :value="option.value"/>
+    </z-select>
+
+    <h1>Grouped Multiple Select</h1>
+    
+    <z-select placeholder="This is Grouped Multiple select" v-model="multiSelectionBox" multiple collapsetags>
+      <z-options v-for="(option , index) in options"
+                :key="index"
+                :label="option.label"
+                :value="option.value"/>
+    </z-select>
   </div>
 </template>
 
@@ -46,12 +62,14 @@
 
 import ZSelect from './components/ZSelect.vue'
 import ZOptions from './components/ZOptions.vue'
+import ZTag from './components/ZTag.vue'
 
 export default {
   name: 'app',
   components: {
     ZSelect,
-    ZOptions
+    ZOptions,
+    ZTag
   },
   methods : {
     doSomething(){
@@ -63,6 +81,7 @@ export default {
       basicSelectionBox : '',
       disabledOptionsBox : '',
       disabledBoxDefaultOption : 'Default option',
+      multiSelectionBox : [],
       options : [{
           value: 'Option1',
           label: 'Option1',

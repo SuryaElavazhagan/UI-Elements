@@ -8,22 +8,41 @@
 
         Attributes : 
             placeholder : String
-            focus : Boolean
+            autofocus : Boolean
             disabled : Boolean
+            multiple : Boolean
 -->
 <template>
     <div class="root">
-        <input class="selectbox"
-        :class="{ 'disabled' :  disabled}"
-        :placeholder="placeholder"
-        :value="value"
-        :disabled="disabled"
-        :autofocus="focus"
-        v-clickOutside="clickedOutside"
-        @keypress="onKeyPress"
-        @click="onClick">
-        <div class="list">
-            <slot v-if="isOpen && !disabled"></slot>
+        <div
+            class="container"
+            @click="onClick"
+            :class="{ 'disabled' :  disabled }"
+            v-clickOutside="clickedOutside"
+            @keypress="onKeyPress">
+            <z-tag class="tags"
+            v-if="multiple && !collapsetags"
+            v-for="(selectedOption, index) in selectedOptions"
+            :key="index"
+            :message="selectedOption"
+            @remove="onRemoveTag"/>
+            <span v-if="multiple && collapsetags" class="tags">
+                <z-tag v-if="selectedOptions.length > 0" 
+                :message="selectedOptions[0]" @remove="selectedOptions.splice(0, 1)"/>
+                <z-tag 
+                    v-if="selectedOptions.length > 1"
+                    :message="`+ ${selectedOptions.length - 1}`" noclose/>
+            </span>
+            <input
+                class="selectbox"
+                :placeholder="currentPlaceholder"
+                :value="currentValue"
+                :class="{ 'disabled' :  disabled}"
+                :autofocus="autofocus">
+            <img class="icon" @click.stop="onClear" src='./select_down.png'/>
+        </div>
+        <div v-if="isOpen && !disabled" class="list">
+            <slot></slot>
         </div>
     </div>
 </template>
@@ -31,12 +50,14 @@
 <script>
 
 import {clickOutside} from '../js/clickoutside.js'
+import ZTag from './ZTag.vue'
+
 
 export default {
     name : 'ZSelect',
     props : {
         placeholder : String,
-        value : String,
+        value : Array | String,
         filterable : {
             type : Boolean,
             default : false
@@ -49,7 +70,15 @@ export default {
             type : Boolean,
             default : false
         },
-        focus : {
+        autofocus : {
+            type : Boolean,
+            default : false
+        },
+        multiple : {
+            type : Boolean, 
+            default : false
+        },
+        collapsetags : {
             type : Boolean,
             default : false
         }
@@ -59,12 +88,16 @@ export default {
         event : 'change'
     },
     created() {
+        // To receive value from child component
+        // Refer emitter.js
         this.$on('handleClick', this.onOptionSelected)
     },
     directives : {
+        // Options list should be closed on clicking outside.
         clickOutside
     },
     provide() {
+        // Provides this to its child components
         return {
             'select' : this
         }
@@ -72,13 +105,26 @@ export default {
     computed :{
         options(){
             return this.$children
+        },
+        currentPlaceholder(){
+            if(this.multiple && this.selectedOptions.length)
+                return ""
+            else
+                return this.placeholder
+        },
+        currentValue(){
+            if(typeof this.value === Array || this.multiple)
+                return ""
+            else
+                return this.value
         }
     },
     data() {
         return {
             isOpen : false,
             hoverIndex : -1,
-            j : 0
+            iconSrc : "select_down.png",
+            selectedOptions : []
         }
     },
     methods : {
@@ -122,13 +168,34 @@ export default {
             this.isOpen = !this.isOpen
             this.hoverIndex = -1
         },
+        onClear(event){
+            if(this.clearable)
+            {   
+                event.stopPropagation()
+                this.$emit('change', "")
+            }
+            else
+                this.isOpen = !this.isOpen
+        },
+        // Triggered on option selected
         onOptionSelected(value){
-            this.$emit('change', value)
-            this.isOpen = !this.isOpen
+            // Emits value for v-model
+            if(this.multiple && this.selectedOptions.indexOf(value) < 0)
+            {
+                this.selectedOptions.push(value)
+                this.$emit('change', this.selectedOptions)
+
+            }else{
+                this.$emit('change', value)
+                this.isOpen = !this.isOpen
+            }
+            this.hoverIndex = -1
         },
-        lostInputFocus(){
-            this.isOpen = !this.isOpen
+        onRemoveTag(value){
+            let index = this.selectedOptions.indexOf(value)
+            this.selectedOptions.splice(index, 1)
         },
+        // Helps in navigating options through arrow keys
         navigate(direction)
         {
             let options = this.options
@@ -170,6 +237,9 @@ export default {
                 }
             }
         }
+    },
+    components : {
+        ZTag
     }
 }
 </script>
@@ -182,4 +252,5 @@ export default {
 .root{
     display: inline;
 }
+
 </style>
