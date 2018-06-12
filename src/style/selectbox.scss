@@ -1,14 +1,13 @@
 .container{
-    display: inline-block;
+    display: flex;
     position: relative;
-    overflow: hidden;
     border: 1px solid;
-    min-height: 23px;
-    min-width: 340px;
-    max-width: 340px;
+    flex-wrap: wrap;
+    min-height: $default-min-box-height;
+    min-width: $default-width;
+    max-width: $default-width;
     border-color : $default-box-color;
-    border-radius: 5px;
-
+    border-radius: $default-border-radius;
     &:hover{
         cursor: pointer;
         border-color: $box-color-hover;
@@ -16,22 +15,18 @@
 }
 
 .selectbox{
-    display: inline-block;
-    padding: 10px 20px;
-    border-radius: 5px;
-    min-height: 23px;
+    padding: $default-vertical-padding $default-horizontal-padding;
+    border-radius: $default-border-radius;
+    min-height: $default-min-box-height;
     border: 0px solid;
-    max-width: -22px;
     &:hover{
         cursor: pointer;
     }
 }
 
 .tags{
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    right: 10px;
+    display: inline-block;
+    margin: 5px;
 }
 
 .icon{
@@ -45,20 +40,22 @@
 
 .list{
     display: block;
-    width: 340px;
-    border-radius: 5px;
+    position: static;
+    min-width: $default-width;
+    max-width: $default-width;
+    overflow-x: hidden;
+    overflow-y: auto;
+    border-radius: $default-border-radius;
     margin-top: 10px;
     z-index: 15px;
     box-shadow: 0px 0px 2px $shadow-color;
-    overflow-y: auto;
     min-height: 210px;
     max-height: 210px;
 }
 
 .options{
     display: block;
-    padding: 10px 20px;
-    width: 300px;
+    padding: $default-vertical-padding $default-horizontal-padding;
     user-select: none;
     &:hover{
         background-color: $option-hover-background;
@@ -68,22 +65,11 @@
 
 .disabled {
     color: $disabled-option-color;
-     
     &:hover{
         cursor: not-allowed;
     }
 }
 
-
-.zinput{
-    display: inline-block;
-    border: 1px solid;
-    border-color : $default-box-color;
-    border-radius: 5px;
-    padding: 10px 20px;
-    width: 300px;
-    &:hover{
-        cursor: pointer;
-        border-color: $box-color-hover;
-    }
+.tag-input{
+    width: 50%;
 }

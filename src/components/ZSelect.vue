@@ -11,34 +11,66 @@
             autofocus : Boolean
             disabled : Boolean
             multiple : Boolean
+            collapsetags : Boolean
+            tabIndex : Number
 -->
 <template>
     <div class="root">
         <div
+            v-if="!allowCreate"
             class="container"
             @click="onClick"
             :class="{ 'disabled' :  disabled }"
             v-clickOutside="clickedOutside"
             @keypress="onKeyPress">
-            <z-tag class="tags"
-            v-if="multiple && !collapsetags"
-            v-for="(selectedOption, index) in selectedOptions"
-            :key="index"
-            :message="selectedOption"
-            @remove="onRemoveTag"/>
-            <span v-if="multiple && collapsetags" class="tags">
-                <z-tag v-if="selectedOptions.length > 0" 
-                :message="selectedOptions[0]" @remove="selectedOptions.splice(0, 1)"/>
+            <span v-if="multiple && !tempCollapseTag && selectedOptions.length > 0" class="tags">
+                <z-tag 
+                v-for="(selectedOption, index) in selectedOptions"
+                :key="index"
+                :message="selectedOption"
+                @remove="onRemoveTag"/>
+            </span>
+            <span v-if="multiple && tempCollapseTag && selectedOptions.length > 0" class="tags">
+                <z-tag 
+                    v-if="selectedOptions.length > 0" 
+                    :message="selectedOptions[0]"
+                    @remove="selectedOptions.splice(0, 1)"/>
                 <z-tag 
                     v-if="selectedOptions.length > 1"
-                    :message="`+ ${selectedOptions.length - 1}`" noclose/>
+                    :message="`+ ${selectedOptions.length - 1}`"
+                    @click.native.stop="expand"
+                    noclose/>
             </span>
             <input
+                v-if="!(selectedOptions.length > 0)"
                 class="selectbox"
                 :placeholder="currentPlaceholder"
-                :value="currentValue"
+                :value="value"
                 :class="{ 'disabled' :  disabled}"
-                :autofocus="autofocus">
+                :autofocus="autofocus"
+                :tabindex="tabIndex">
+            <img class="icon" @click.stop="onClear" src='./select_down.png'/>
+        </div>
+        <div 
+            v-if="allowCreate"
+            class="container"
+            @click="onClick"
+            :class="{ 'disabled' :  disabled }"
+            v-clickOutside="clickedOutside"
+            @keypress="onKeyPress">
+            <span class="tags">
+                <z-tag 
+                v-for="(selectedOption, index) in selectedOptions"
+                :key="index"
+                :message="selectedOption"
+                @remove="onRemoveTag"/>
+            </span>
+            <input
+                class="selectbox tag-input"
+                :placeholder="currentPlaceholder"
+                :class="{ 'disabled' :  disabled}"
+                :autofocus="autofocus"
+                :tabindex="tabIndex">
             <img class="icon" @click.stop="onClear" src='./select_down.png'/>
         </div>
         <div v-if="isOpen && !disabled" class="list">
@@ -81,6 +113,11 @@ export default {
         collapsetags : {
             type : Boolean,
             default : false
+        },
+        tabIndex : Number | String,
+        allowCreate : {
+            type : Boolean,
+            default : false
         }
     },
     model : {
@@ -97,7 +134,7 @@ export default {
         clickOutside
     },
     provide() {
-        // Provides this to its child components
+        // Provides 'this' to its child components
         return {
             'select' : this
         }
@@ -111,25 +148,28 @@ export default {
                 return ""
             else
                 return this.placeholder
-        },
-        currentValue(){
-            if(typeof this.value === Array || this.multiple)
-                return ""
-            else
-                return this.value
         }
     },
     data() {
         return {
             isOpen : false,
             hoverIndex : -1,
-            iconSrc : "select_down.png",
+            iconSrc : ["./select_down.png", "../assets/close_circle.png"],
+            tempCollapseTag : this.collapsetags,
             selectedOptions : []
+        }
+    },
+    watch : {
+        selectedOptions : function(newOptions){
+            if(newOptions.length <= 0)
+            {
+                this.tempCollapseTag = this.collapsetags
+            }
         }
     },
     methods : {
         onKeyPress : function(event){
-            if(!this.filterable)
+            if(!this.allowCreate)
             {
                 event.preventDefault()
             }
@@ -180,7 +220,7 @@ export default {
         // Triggered on option selected
         onOptionSelected(value){
             // Emits value for v-model
-            if(this.multiple && this.selectedOptions.indexOf(value) < 0)
+            if((this.multiple || this.allowCreate) && this.selectedOptions.indexOf(value) < 0)
             {
                 this.selectedOptions.push(value)
                 this.$emit('change', this.selectedOptions)
@@ -194,6 +234,9 @@ export default {
         onRemoveTag(value){
             let index = this.selectedOptions.indexOf(value)
             this.selectedOptions.splice(index, 1)
+        },
+        expand(){
+            this.tempCollapseTag = false    
         },
         // Helps in navigating options through arrow keys
         navigate(direction)

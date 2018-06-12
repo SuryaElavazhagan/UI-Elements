@@ -1,14 +1,19 @@
+.wrapper{
+    display: inline-block;
+    margin-bottom: 5px;
+}
+
 .tag{
-    display: inline;
     background-color: $tag-bg-color;
-    border-radius: 5px;
+    border-radius: $default-border-radius;
+    min-height: 23px;
     position: relative;
     padding: 5px;
     margin: 5px;
 }
 
 .message{
-    padding: 5px;
+    display: inline;
 }
 
 .clear-tag{
