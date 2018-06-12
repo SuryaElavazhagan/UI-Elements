@@ -1,9 +1,11 @@
-.selectbox{
-    display:block;
-    width: 300px;
-    min-height: 23px;
-    padding: 10px 20px;
+.container{
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
     border: 1px solid;
+    min-height: 23px;
+    min-width: 340px;
+    max-width: 340px;
     border-color : $default-box-color;
     border-radius: 5px;
 
@@ -13,13 +15,44 @@
     }
 }
 
-.list{
+.selectbox{
     display: inline-block;
+    padding: 10px 20px;
+    border-radius: 5px;
+    min-height: 23px;
+    border: 0px solid;
+    max-width: -22px;
+    &:hover{
+        cursor: pointer;
+    }
+}
+
+.tags{
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+}
+
+.icon{
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    &:hover {
+        cursor: pointer;  
+    }
+}
+
+.list{
+    display: block;
+    width: 340px;
     border-radius: 5px;
     margin-top: 10px;
     z-index: 15px;
     box-shadow: 0px 0px 2px $shadow-color;
-    transform: 3px;
+    overflow-y: auto;
+    min-height: 210px;
+    max-height: 210px;
 }
 
 .options{
@@ -35,8 +68,22 @@
 
 .disabled {
     color: $disabled-option-color;
+     
     &:hover{
         cursor: not-allowed;
-        background-color: white;
+    }
+}
+
+
+.zinput{
+    display: inline-block;
+    border: 1px solid;
+    border-color : $default-box-color;
+    border-radius: 5px;
+    padding: 10px 20px;
+    width: 300px;
+    &:hover{
+        cursor: pointer;
+        border-color: $box-color-hover;
     }
 }

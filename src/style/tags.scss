@@ -1,0 +1,20 @@
+.tag{
+    display: inline;
+    background-color: $tag-bg-color;
+    border-radius: 5px;
+    position: relative;
+    padding: 5px;
+    margin: 5px;
+}
+
+.message{
+    padding: 5px;
+}
+
+.clear-tag{
+    position: relative;
+    top: 6px;
+    &:hover{
+        cursor: pointer;
+    }
+}
