@@ -17,63 +17,54 @@
 <template>
     <div class="root">
         <div
-            v-if="!allowCreate"
             class="container"
             @click="onClick"
             :class="{ 'disabled' :  disabled }"
             v-clickOutside="clickedOutside"
             @keypress="onKeyPress">
-            <span v-if="multiple && !tempCollapseTag && selectedOptions.length > 0" class="tags">
+            <span v-if="((multiple && !tempCollapseTag) || allowCreate) && selectedOptionsCount > 0" class="tags">
                 <z-tag 
                 v-for="(selectedOption, index) in selectedOptions"
                 :key="index"
                 :message="selectedOption"
-                @remove="onRemoveTag"/>
+                :expand-or-shrink="expandOrShrink"
+                :needtodelete="isGoingToDelete && (index == selectedOptionsCount - 1)"
+                @remove="onRemoveTag"
+                @click.native.stop="handleExpandOrShrink"/>
             </span>
-            <span v-if="multiple && tempCollapseTag && selectedOptions.length > 0" class="tags">
+            <span v-if="multiple && tempCollapseTag && selectedOptionsCount > 0" class="tags">
                 <z-tag 
-                    v-if="selectedOptions.length > 0" 
+                    v-if="selectedOptionsCount > 0" 
                     :message="selectedOptions[0]"
                     @remove="selectedOptions.splice(0, 1)"/>
                 <z-tag 
-                    v-if="selectedOptions.length > 1"
-                    :message="`+ ${selectedOptions.length - 1}`"
-                    @click.native.stop="expand"
-                    noclose/>
+                    v-if="selectedOptionsCount > 1"
+                    :message="`+ ${selectedOptionsCount - 1}`"
+                    @click.native.stop="handleExpandOrShrink"
+                    noclose expand-or-shrink/>
             </span>
             <input
-                v-if="!(selectedOptions.length > 0)"
+                v-if="!(selectedOptionsCount > 0) && !allowCreate"
                 class="selectbox"
                 :placeholder="currentPlaceholder"
                 :value="value"
                 :class="{ 'disabled' :  disabled}"
                 :autofocus="autofocus"
+                ref="selectBox"
                 :tabindex="tabIndex">
-            <img class="icon" @click.stop="onClear" src='./select_down.png'/>
-        </div>
-        <div 
-            v-if="allowCreate"
-            class="container"
-            @click="onClick"
-            :class="{ 'disabled' :  disabled }"
-            v-clickOutside="clickedOutside"
-            @keypress="onKeyPress">
-            <span class="tags">
-                <z-tag 
-                v-for="(selectedOption, index) in selectedOptions"
-                :key="index"
-                :message="selectedOption"
-                @remove="onRemoveTag"/>
-            </span>
             <input
-                class="selectbox tag-input"
+                v-if="allowCreate"
+                class="selectbox"
                 :placeholder="currentPlaceholder"
+                v-model="createdTag"
                 :class="{ 'disabled' :  disabled}"
                 :autofocus="autofocus"
-                :tabindex="tabIndex">
+                ref="selectBox"
+                :tabindex="tabIndex"/>
             <img class="icon" @click.stop="onClear" src='./select_down.png'/>
         </div>
         <div v-if="isOpen && !disabled" class="list">
+            <z-options v-if="allowCreate && createdTag.length > 0" :value="createdTag"/>
             <slot></slot>
         </div>
     </div>
@@ -83,7 +74,7 @@
 
 import {clickOutside} from '../js/clickoutside.js'
 import ZTag from './ZTag.vue'
-
+import ZOptions from './ZOptions.vue'
 
 export default {
     name : 'ZSelect',
@@ -140,11 +131,11 @@ export default {
         }
     },
     computed :{
-        options(){
-            return this.$children
+        selectedOptionsCount(){
+            return this.selectedOptions.length
         },
         currentPlaceholder(){
-            if(this.multiple && this.selectedOptions.length)
+            if(this.multiple && this.selectedOptionsCount)
                 return ""
             else
                 return this.placeholder
@@ -154,9 +145,14 @@ export default {
         return {
             isOpen : false,
             hoverIndex : -1,
+            createdTag : '',
             iconSrc : ["./select_down.png", "../assets/close_circle.png"],
             tempCollapseTag : this.collapsetags,
-            selectedOptions : []
+            selectedOptions : [],
+            options : [],
+            expandOrShrink : false,
+            isGoingToDelete : false,
+            backspaceCount : 0
         }
     },
     watch : {
@@ -165,6 +161,17 @@ export default {
             {
                 this.tempCollapseTag = this.collapsetags
             }
+        },
+        createdTag : function(newValue){
+            this.isOpen = true
+            this.options.forEach(option => {
+                if(option.value.toLowerCase().indexOf(newValue.toLowerCase()) < 0)
+                {
+                    option.isFiltered = false
+                }else{
+                    option.isFiltered = true
+                }
+            })
         }
     },
     methods : {
@@ -176,10 +183,14 @@ export default {
             switch(event.keyCode)
             {
                 // For Enter key
-                case 13 :if(this.hoverIndex >= 0 && this.isOpen)
+                case 13 :if(this.hoverIndex >= 0 && this.isOpen && !(this.allowCreate && this.createdTag.length > 0))
                         {
                             this.onOptionSelected(this.options[this.hoverIndex].value)
-                        }else{
+                        }else if(this.allowCreate && this.createdTag.length > 0){
+                            this.onOptionSelected(this.createdTag)
+                            this.createdTag = ""
+                        }
+                        else{
                             this.isOpen = !this.isOpen
                         }
                         break;
@@ -193,6 +204,19 @@ export default {
                 // For arrow up
                 case 38 : this.navigate('up')
                         break;
+                case 8: if(this.allowCreate && this.selectedOptionsCount > 0 && this.createdTag.length == 0){
+                            if(this.backspaceCount == 0)
+                            {
+                                this.isGoingToDelete = true
+                                this.backspaceCount++
+                            }
+                            else {
+                                this.backspaceCount = 0
+                                this.selectedOptions.pop()
+                                this.isGoingToDelete = false
+                            }
+                        }
+                        break;
             }
         },
         clickedOutside(){
@@ -205,6 +229,10 @@ export default {
             /* 
                 Hover index should be reset to -1
             */
+            if(this.selectedOptionsCount < 0)
+            {
+                this.$refs.selectBox.focus()
+            }
             this.isOpen = !this.isOpen
             this.hoverIndex = -1
         },
@@ -219,8 +247,10 @@ export default {
         },
         // Triggered on option selected
         onOptionSelected(value){
+            let index = this.selectedOptions.indexOf(value)
+
             // Emits value for v-model
-            if((this.multiple || this.allowCreate) && this.selectedOptions.indexOf(value) < 0)
+            if((this.multiple || this.allowCreate) && index < 0)
             {
                 this.selectedOptions.push(value)
                 this.$emit('change', this.selectedOptions)
@@ -229,14 +259,22 @@ export default {
                 this.$emit('change', value)
                 this.isOpen = !this.isOpen
             }
+            if(index >= 0 && this.allowCreate)
+            {
+                this.selectedOptions.splice(index, 1)
+            }
             this.hoverIndex = -1
         },
         onRemoveTag(value){
             let index = this.selectedOptions.indexOf(value)
             this.selectedOptions.splice(index, 1)
         },
-        expand(){
-            this.tempCollapseTag = false    
+        handleExpandOrShrink(){
+            if(this.collapsetags)
+            {
+                this.expandOrShrink = !this.expandOrShrink
+                this.tempCollapseTag = !this.tempCollapseTag
+            }
         },
         // Helps in navigating options through arrow keys
         navigate(direction)
@@ -282,7 +320,8 @@ export default {
         }
     },
     components : {
-        ZTag
+        ZTag,
+        ZOptions
     }
 }
 </script>

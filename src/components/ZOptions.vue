@@ -1,7 +1,7 @@
 <template>
-    <span
+    <span v-if="isFiltered"
         class="options"
-        :class="{'disabled' : disabled, 'hovered' : isHovered}"
+        :class="{'disabled' : disabled, 'hovered' : isHovered , 'selected' : this.select.value.indexOf(value) >= 0}"
         @click="onClick"
         @mouseover="hoverItem">
         {{ value }}
@@ -30,6 +30,12 @@ export default {
         }
     },
     inject : ['select'],
+    created() {
+        this.select.options.push(this)
+    },
+    beforeDestroy(){
+        this.select.options.splice(this.select.options.indexOf(this), 1)
+    },
     computed : {
         isHovered(){
             let index = this.select.hoverIndex
@@ -42,11 +48,16 @@ export default {
     methods : {
         hoverItem() {
             if(!this.disabled)
-                this.select.hoverIndex = this.select.options.indexOf(this) 
+                this.select.hoverIndex = this.select.options.indexOf(this)
         },
         onClick(){
             if(!this.disabled)
                 this.dispatch('z-select' , 'handleClick' , this.value)
+        }
+    },
+    data(){
+        return{
+            isFiltered : true
         }
     }
 }

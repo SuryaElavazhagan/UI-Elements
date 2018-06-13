@@ -1,7 +1,7 @@
 <template>
     <div class="wrapper">
-        <span class="tag">
-            <p class="message" :class="{'underline' : noclose}">{{ message }}</p>
+        <span class="tag" :class="{ 'highlight-border' : needtodelete }">
+            <p class="message" :class="{'underline' : expandOrShrink}">{{ message }}</p>
             <img v-if="!noclose" class="clear-tag" src="../assets/close_circle.png" @click.stop="$emit('remove', message)"/>
         </span>
     </div>
@@ -13,6 +13,14 @@ export default {
     props : {
         message : String | Number,
         noclose : {
+            type : Boolean,
+            default : false
+        },
+        needtodelete : {
+            type : Boolean,
+            default : false
+        },
+        expandOrShrink : {
             type : Boolean,
             default : false
         }
