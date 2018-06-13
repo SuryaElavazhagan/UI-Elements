@@ -59,12 +59,11 @@
     <h1>Create own tag</h1>
     
     <z-select placeholder="Create own tag here" v-model="createTagSelectBox" allow-create>
-      <z-options v-for="(option , index) in options"
+      <z-options v-for="(option , index) in optionCreate"
                 :key="index"
                 :label="option.label"
                 :value="option.value"/>
     </z-select>
-    <br><br><br><br><br><br><br>
     <!--<div class="combobox">
       <div v-if="!open" class="combotag">
         <z-tag message="Hello"/>
@@ -125,6 +124,27 @@ export default {
           value: 'Option5',
           label: 'Option5',
           disbaled : false
+        }],
+        optionCreate: [{
+          value: 'Princeton',
+          label: 'Option1',
+          disabled : false
+        }, {
+          value: 'Project',
+          label: 'Option2',
+          disabled : true
+        }, {
+          value: 'Oxford',
+          label: 'Option3',
+          disbaled : false
+        }, {
+          value: 'Duke',
+          label: 'Option4',
+          disbaled : true
+        }, {
+          value: 'Anna University',
+          label: 'Option5',
+          disbaled : false
         }]
     }
   }
@@ -132,6 +152,9 @@ export default {
 </script>
 
 <style lang="scss">
+
+@import "./style/partials/_variables";
+@import "./style/combobox";
 
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
