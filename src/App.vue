@@ -9,6 +9,14 @@
                 :value="option.value"/>
     </z-select>
 
+    <h1>Multiple Select</h1>
+    
+    <z-select placeholder="This is Multiple select" v-model="multiSelectionBox" multiple tab-index="2">
+      <z-options v-for="(option , index) in options"
+                :key="index"
+                :label="option.label"
+                :value="option.value"/>
+    </z-select>
     <h1>Disabled options</h1>
     
     <z-select placeholder="Some options are disabled here" v-model="disabledOptionsBox" tab-index="1">
@@ -38,15 +46,6 @@
     <h1>Simple tag</h1>
     <z-tag message="Hello"/>
 
-    <h1>Multiple Select</h1>
-    
-    <z-select placeholder="This is Multiple select" v-model="multiSelectionBox" multiple tab-index="2">
-      <z-options v-for="(option , index) in options"
-                :key="index"
-                :label="option.label"
-                :value="option.value"/>
-    </z-select>
-
     <h1>Grouped Multiple Select</h1>
     
     <z-select placeholder="This is Grouped Multiple select" v-model="multiSelectGroupedBox" multiple collapsetags tab-index="3">
@@ -64,16 +63,6 @@
                 :label="option.label"
                 :value="option.value"/>
     </z-select>
-    <!--<div class="combobox">
-      <div v-if="!open" class="combotag">
-        <z-tag message="Hello"/>
-        <z-tag message="Hello"/>
-      </div>
-      <input v-if="open" class="comboinput">
-      <div class="comboiconcontainer">
-        <img class="comboicon" src="./components/select_down.png"/>
-      </div>
-    </div>-->
   </div>
 </template>
 
@@ -90,11 +79,6 @@ export default {
     ZOptions,
     ZTag
   },
-  methods : {
-    doSomething(){
-      alert('Value Changed')
-    }
-  },
   data(){
     return {
       open : true,
@@ -105,23 +89,23 @@ export default {
       multiSelectionBox : [],
       multiSelectGroupedBox : [],
       options : [{
-          value: 'Option1',
+          value: 'Option1 No',
           label: 'Option1',
           disabled : false
         }, {
-          value: 'Option2',
+          value: 'Option2 No',
           label: 'Option2',
           disabled : true
         }, {
-          value: 'Option3',
+          value: 'Option3 No',
           label: 'Option3',
           disbaled : false
         }, {
-          value: 'Option4',
+          value: 'Option4 aaaaaaaaaaaaaaaa',
           label: 'Option4',
           disbaled : true
         }, {
-          value: 'Option5',
+          value: 'Option5aaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
           label: 'Option5',
           disbaled : false
         }],
@@ -152,9 +136,6 @@ export default {
 </script>
 
 <style lang="scss">
-
-@import "./style/partials/_variables";
-@import "./style/combobox";
 
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;

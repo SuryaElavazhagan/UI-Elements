@@ -1,0 +1,44 @@
+.root{
+    display: flex;
+    border: 1px solid $default-box-color;
+    border-radius: $default-border-radius;
+    flex-wrap: wrap;
+    padding: $default-padding;
+    min-width: $default-width + 30px;
+    max-width: $default-width + 30px;
+    &:hover{
+        cursor: pointer;
+        border-color: $box-color-hover;
+    }
+
+    .container{
+        display: flex;
+        min-width: $default-width;
+        max-width: $default-width;
+        flex-wrap: wrap;
+
+        .tag-section{
+            justify-content: flex-start;
+        }
+    
+        .input-section{
+            width: 50%;
+            .input-box{
+                width: 90%;
+                border: none;
+                padding: 10px 5px;
+                border-radius: $default-border-radius;
+
+                &:hover{
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+    .icon{
+        margin-right: 0px;
+        img{
+            margin-top: 5px;
+        }
+    }
+}

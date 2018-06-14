@@ -15,56 +15,61 @@
             tabIndex : Number
 -->
 <template>
-    <div class="root">
-        <div
-            class="container"
+    <div class="selectbox"
+        :class="{ 'disabled' :  disabled }"
+        v-clickOutside="clickedOutside">
+        <div class="root"
             @click="onClick"
-            :class="{ 'disabled' :  disabled }"
-            v-clickOutside="clickedOutside"
             @keypress="onKeyPress">
-            <span v-if="((multiple && !tempCollapseTag) || allowCreate) && selectedOptionsCount > 0" class="tags">
+            <div class="container">
+                <div v-if="((multiple && !tempCollapseTag) || allowCreate) && selectedOptionsCount > 0" class="tag-section">
                 <z-tag 
-                v-for="(selectedOption, index) in selectedOptions"
-                :key="index"
-                :message="selectedOption"
-                :expand-or-shrink="expandOrShrink"
-                :needtodelete="isGoingToDelete && (index == selectedOptionsCount - 1)"
-                @remove="onRemoveTag"
-                @click.native.stop="handleExpandOrShrink"/>
-            </span>
-            <span v-if="multiple && tempCollapseTag && selectedOptionsCount > 0" class="tags">
-                <z-tag 
-                    v-if="selectedOptionsCount > 0" 
-                    :message="selectedOptions[0]"
-                    @remove="selectedOptions.splice(0, 1)"/>
-                <z-tag 
-                    v-if="selectedOptionsCount > 1"
-                    :message="`+ ${selectedOptionsCount - 1}`"
-                    @click.native.stop="handleExpandOrShrink"
-                    noclose expand-or-shrink/>
-            </span>
-            <input
-                v-if="!(selectedOptionsCount > 0) && !allowCreate"
-                class="selectbox"
-                :placeholder="currentPlaceholder"
-                :value="value"
-                :class="{ 'disabled' :  disabled}"
-                :autofocus="autofocus"
-                ref="selectBox"
-                :tabindex="tabIndex">
-            <input
-                v-if="allowCreate"
-                class="selectbox"
-                :placeholder="currentPlaceholder"
-                v-model="createdTag"
-                :class="{ 'disabled' :  disabled}"
-                :autofocus="autofocus"
-                ref="selectBox"
-                :tabindex="tabIndex"/>
-            <img class="icon" @click.stop="onClear" src='./select_down.png'/>
+                        v-for="(selectedOption, index) in selectedOptions"
+                        :key="index"
+                        :message="selectedOption"
+                        :expand-or-shrink="expandOrShrink"
+                        :needtodelete="isGoingToDelete && (index == selectedOptionsCount - 1)"
+                        @remove="onRemoveTag"
+                        @click.native.stop="handleExpandOrShrink"/>
+                </div>
+                <div v-if="multiple && tempCollapseTag && selectedOptionsCount > 0" class="tag-section">
+                    <z-tag 
+                            v-if="selectedOptionsCount > 0" 
+                            :message="selectedOptions[0]"
+                            @remove="onRemoveTag"/>
+                    <z-tag 
+                        v-if="selectedOptionsCount > 1"
+                        :message="`+ ${selectedOptionsCount - 1}`"
+                        @click.native.stop="handleExpandOrShrink"
+                        noclose expand-or-shrink/>
+                </div>
+                <div class="input-section">
+                <input 
+                    v-if="!(selectedOptionsCount > 0) && !allowCreate"
+                    class="input-box"
+                    :placeholder="currentPlaceholder"
+                    :value="cachedValue"
+                    :class="{ 'disabled' :  disabled}"
+                    :autofocus="autofocus"
+                    ref="selectBox"
+                    :tabindex="tabIndex"/>
+                <input 
+                    v-if="allowCreate"
+                    class="input-box"
+                    :placeholder="currentPlaceholder"
+                    v-model="createdTag"
+                    :class="{ 'disabled' :  disabled}"
+                    :autofocus="autofocus"
+                    ref="selectBox"
+                    :tabindex="tabIndex"/>
+                </div>
+            </div>
+            <div class="icon">
+                <img src="./select_down.png">
+            </div>
         </div>
         <div v-if="isOpen && !disabled" class="list">
-            <z-options v-if="allowCreate && createdTag.length > 0" :value="createdTag"/>
+            <z-options v-if="allowCreate && createdTag.length > 0" :value="createdTag" :label="createdTag"/>
             <slot></slot>
         </div>
     </div>
@@ -152,7 +157,9 @@ export default {
             options : [],
             expandOrShrink : false,
             isGoingToDelete : false,
-            backspaceCount : 0
+            backspaceCount : 0,
+            cachedValue : '',
+            selectedOptionsCache : []
         }
     },
     watch : {
@@ -162,10 +169,12 @@ export default {
                 this.tempCollapseTag = this.collapsetags
             }
         },
-        createdTag : function(newValue){
+        createdTag : function(newValue , oldValue){
+            if(newValue.length !== 0)
+                this.hoverIndex = 0
             this.isOpen = true
             this.options.forEach(option => {
-                if(option.value.toLowerCase().indexOf(newValue.toLowerCase()) < 0)
+                if((option.label.toLowerCase().indexOf(newValue.toLowerCase()) < 0) && !(option.label === oldValue))
                 {
                     option.isFiltered = false
                 }else{
@@ -185,9 +194,9 @@ export default {
                 // For Enter key
                 case 13 :if(this.hoverIndex >= 0 && this.isOpen && !(this.allowCreate && this.createdTag.length > 0))
                         {
-                            this.onOptionSelected(this.options[this.hoverIndex].value)
+                            this.onOptionSelected(this.options[this.hoverIndex])
                         }else if(this.allowCreate && this.createdTag.length > 0){
-                            this.onOptionSelected(this.createdTag)
+                            this.onOptionSelected(this.options[this.options.length - 1])
                             this.createdTag = ""
                         }
                         else{
@@ -213,6 +222,7 @@ export default {
                             else {
                                 this.backspaceCount = 0
                                 this.selectedOptions.pop()
+                                this.selectedOptionsCache.pop()
                                 this.isGoingToDelete = false
                             }
                         }
@@ -229,10 +239,8 @@ export default {
             /* 
                 Hover index should be reset to -1
             */
-            if(this.selectedOptionsCount < 0)
-            {
+            if(this.selectedOptionsCount == 0)
                 this.$refs.selectBox.focus()
-            }
             this.isOpen = !this.isOpen
             this.hoverIndex = -1
         },
@@ -246,28 +254,38 @@ export default {
                 this.isOpen = !this.isOpen
         },
         // Triggered on option selected
-        onOptionSelected(value){
-            let index = this.selectedOptions.indexOf(value)
+        onOptionSelected(option){
+            let index = this.selectedOptions.indexOf(option.label)
 
             // Emits value for v-model
             if((this.multiple || this.allowCreate) && index < 0)
             {
-                this.selectedOptions.push(value)
-                this.$emit('change', this.selectedOptions)
+                this.selectedOptions.push(option.label)
+                this.selectedOptionsCache.push(option.value)
+                this.$emit('change', this.selectedOptionsCache)
 
-            }else{
-                this.$emit('change', value)
-                this.isOpen = !this.isOpen
             }
-            if(index >= 0 && this.allowCreate)
+            if(!this.multiple && !this.tempCollapseTag && !this.allowCreate)
+            {
+                this.cachedValue = option.label
+                this.$emit('change', option.label)
+                this.isOpen = false
+            }
+            if(index >= 0 && (this.allowCreate || this.multiple))
             {
                 this.selectedOptions.splice(index, 1)
+                this.selectedOptionsCache.splice(index , 1)
             }
             this.hoverIndex = -1
         },
         onRemoveTag(value){
-            let index = this.selectedOptions.indexOf(value)
+            let index;
+            if(this.multiple && !this.tempCollapseTag)
+                index = this.selectedOptions.indexOf(value)
+            else if(this.multiple && this.tempCollapseTag)
+                index = 0
             this.selectedOptions.splice(index, 1)
+            this.selectedOptionsCache.splice(index , 1)
         },
         handleExpandOrShrink(){
             if(this.collapsetags)
@@ -329,10 +347,10 @@ export default {
 <style lang="scss">
 
 @import "../style/partials/_variables";
-@import "../style/selectbox";
+@import "../style/combobox";
 
-.root{
-    display: inline;
+.selectbox{
+    display: inline-block;
 }
 
 </style>

@@ -1,10 +1,10 @@
 <template>
     <span v-if="isFiltered"
         class="options"
-        :class="{'disabled' : disabled, 'hovered' : isHovered , 'selected' : this.select.value.indexOf(value) >= 0}"
+        :class="{'disabled' : disabled, 'hovered' : isHovered , 'selected' : isSelected}"
         @click="onClick"
         @mouseover="hoverItem">
-        {{ value }}
+        {{ label }}
     </span>
 </template>
 
@@ -19,9 +19,9 @@ export default {
         event : 'click'
     },
     props : {
-        label : String,
+        label : String | Number,
         value : {
-            type : String,
+            type : String | Object,
             required : true
         },
         disabled : {
@@ -43,6 +43,12 @@ export default {
             if(!this.disabled && options[index] == this)
                 return true
             return false
+        },
+        isSelected(){
+            if((this.select.value.indexOf(this.label) >= 0) || (this.select.selectedOptions.indexOf(this.label) >= 0))
+                return true
+            else
+                false
         }
     },
     methods : {
@@ -52,7 +58,7 @@ export default {
         },
         onClick(){
             if(!this.disabled)
-                this.dispatch('z-select' , 'handleClick' , this.value)
+                this.dispatch('z-select' , 'handleClick' , this)
         }
     },
     data(){
