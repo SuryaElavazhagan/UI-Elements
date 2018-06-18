@@ -1,11 +1,11 @@
 <template>
-    <span v-if="isFiltered"
+    <div v-if="isFiltered"
         class="options"
         :class="{'disabled' : disabled, 'hovered' : isHovered , 'selected' : isSelected}"
         @click="onClick"
         @mouseover="hoverItem">
         {{ label }}
-    </span>
+    </div>
 </template>
 
 <script>
@@ -31,12 +31,15 @@ export default {
     },
     inject : ['select'],
     created() {
+        // Sending 'this' value to its parent z-select component
         this.select.options.push(this)
     },
     beforeDestroy(){
+        // Removing 'this' value from parent onDestroy
         this.select.options.splice(this.select.options.indexOf(this), 1)
     },
     computed : {
+        // Updates the hoverIndex of the parent
         isHovered(){
             let index = this.select.hoverIndex
             let options = this.select.options
@@ -44,26 +47,34 @@ export default {
                 return true
             return false
         },
+        // Highlights the option if selected by applying style
         isSelected(){
             if((this.select.value.indexOf(this.label) >= 0) || (this.select.selectedOptions.indexOf(this.label) >= 0))
                 return true
             else
                 false
+        },
+        isFiltered(){
+            return this.select.filteredOptions.some(option => option === this)
+        }
+    },
+    watch :{
+        isFiltered : function(newValue, oldValue){
+            if(oldValue && !newValue){
+                this.select.options.splice(this.select.options.indexOf(this), 1)
+            }
         }
     },
     methods : {
+        // Handles 'onmouseover'
         hoverItem() {
             if(!this.disabled)
                 this.select.hoverIndex = this.select.options.indexOf(this)
         },
+        // Handles click
         onClick(){
             if(!this.disabled)
                 this.dispatch('z-select' , 'handleClick' , this)
-        }
-    },
-    data(){
-        return{
-            isFiltered : true
         }
     }
 }

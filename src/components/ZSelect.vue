@@ -8,15 +8,12 @@
 
         Attributes : 
             placeholder : String
-            autofocus : Boolean
             disabled : Boolean
             multiple : Boolean
             collapsetags : Boolean
-            tabIndex : Number
 -->
 <template>
     <div class="selectbox"
-        :class="{ 'disabled' :  disabled }"
         v-clickOutside="clickedOutside">
         <div class="root"
             @click="onClick"
@@ -43,25 +40,21 @@
                         @click.native.stop="handleExpandOrShrink"
                         noclose expand-or-shrink/>
                 </div>
-                <div class="input-section">
+                <div class="input-section" :class="{'without-tag-section' : selectedOptionsCount == 0, 'with-tag-section' : (selectedOptionsCount > 0 && !allowCreate)}">
                 <input 
-                    v-if="!(selectedOptionsCount > 0) && !allowCreate"
+                    v-if="!allowCreate"
                     class="input-box"
                     :placeholder="currentPlaceholder"
                     :value="cachedValue"
                     :class="{ 'disabled' :  disabled}"
-                    :autofocus="autofocus"
-                    ref="selectBox"
-                    :tabindex="tabIndex"/>
+                    ref="selectBox"/>
                 <input 
                     v-if="allowCreate"
                     class="input-box"
                     :placeholder="currentPlaceholder"
                     v-model="createdTag"
                     :class="{ 'disabled' :  disabled}"
-                    :autofocus="autofocus"
-                    ref="selectBox"
-                    :tabindex="tabIndex"/>
+                    ref="selectBox"/>
                 </div>
             </div>
             <div class="icon">
@@ -69,7 +62,7 @@
             </div>
         </div>
         <div v-if="isOpen && !disabled" class="list">
-            <z-options v-if="allowCreate && createdTag.length > 0" :value="createdTag" :label="createdTag"/>
+            <z-options v-if="allowCreate && (showTypingData && createdTag.length > 0)" :value="createdTag" :label="createdTag"/>
             <slot></slot>
         </div>
     </div>
@@ -86,19 +79,11 @@ export default {
     props : {
         placeholder : String,
         value : Array | String,
-        filterable : {
-            type : Boolean,
-            default : false
-        },
         clearable : {
             type : Boolean,
             default : false
         },
         disabled : {
-            type : Boolean,
-            default : false
-        },
-        autofocus : {
             type : Boolean,
             default : false
         },
@@ -110,7 +95,6 @@ export default {
             type : Boolean,
             default : false
         },
-        tabIndex : Number | String,
         allowCreate : {
             type : Boolean,
             default : false
@@ -140,10 +124,13 @@ export default {
             return this.selectedOptions.length
         },
         currentPlaceholder(){
-            if(this.multiple && this.selectedOptionsCount)
+            if(this.multiple && this.selectedOptionsCount > 0)
                 return ""
             else
                 return this.placeholder
+        },
+        filteredOptions(){
+            return this.options.filter(option => option.label.toLowerCase().indexOf(this.createdTag.toLowerCase()) >= 0)
         }
     },
     data() {
@@ -151,7 +138,6 @@ export default {
             isOpen : false,
             hoverIndex : -1,
             createdTag : '',
-            iconSrc : ["./select_down.png", "../assets/close_circle.png"],
             tempCollapseTag : this.collapsetags,
             selectedOptions : [],
             options : [],
@@ -159,7 +145,8 @@ export default {
             isGoingToDelete : false,
             backspaceCount : 0,
             cachedValue : '',
-            selectedOptionsCache : []
+            selectedOptionsCache : [],
+            showTypingData : true
         }
     },
     watch : {
@@ -169,24 +156,29 @@ export default {
                 this.tempCollapseTag = this.collapsetags
             }
         },
-        createdTag : function(newValue , oldValue){
-            if(newValue.length !== 0)
-                this.hoverIndex = 0
-            this.isOpen = true
-            this.options.forEach(option => {
-                if((option.label.toLowerCase().indexOf(newValue.toLowerCase()) < 0) && !(option.label === oldValue))
-                {
-                    option.isFiltered = false
-                }else{
-                    option.isFiltered = true
-                }
-            })
+        // Watches createdTag property to filter options.
+        createdTag : function(newValue){
+            // Always hover the option which user types.
+            if(newValue.length > 0)
+            {
+                this.showTypingData = true
+            }
+            if(newValue !== ""){
+                this.isOpen = true
+            } else{
+                this.isOpen = false
+            }
+            if(this.options.some(option => option.label === newValue)){
+                this.showTypingData = false
+            }else{
+                this.showTypingData = true}
         }
     },
     methods : {
         onKeyPress : function(event){
             if(!this.allowCreate)
             {
+                // Only allowCreate property allows typing
                 event.preventDefault()
             }
             switch(event.keyCode)
@@ -196,7 +188,7 @@ export default {
                         {
                             this.onOptionSelected(this.options[this.hoverIndex])
                         }else if(this.allowCreate && this.createdTag.length > 0){
-                            this.onOptionSelected(this.options[this.options.length - 1])
+                            this.onOptionSelected(this.options.filter(option => option.label == this.createdTag)[0])    
                             this.createdTag = ""
                         }
                         else{
@@ -227,6 +219,10 @@ export default {
                             }
                         }
                         break;
+                case 9: this.$refs.selectBox.blur()
+                        this.isOpen = false
+                        break;
+                         
             }
         },
         clickedOutside(){
@@ -238,9 +234,8 @@ export default {
         onClick(){
             /* 
                 Hover index should be reset to -1
-            */
-            if(this.selectedOptionsCount == 0)
-                this.$refs.selectBox.focus()
+            */    
+            this.$refs.selectBox.focus()
             this.isOpen = !this.isOpen
             this.hoverIndex = -1
         },
@@ -278,9 +273,11 @@ export default {
             }
             this.hoverIndex = -1
         },
+        // Triggered on clicking 'closing tag' button
         onRemoveTag(value){
             let index;
-            if(this.multiple && !this.tempCollapseTag)
+            // Checks for index of tag, which incurred
+            if((this.multiple && !this.tempCollapseTag) || this.allowCreate)
                 index = this.selectedOptions.indexOf(value)
             else if(this.multiple && this.tempCollapseTag)
                 index = 0
@@ -352,5 +349,4 @@ export default {
 .selectbox{
     display: inline-block;
 }
-
 </style>
