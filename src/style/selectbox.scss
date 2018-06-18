@@ -1,43 +1,37 @@
-.tags{
-    display: inline-block;
-    margin: 5px;
-}
+// Applied for options in selection box
 .list{
-    display: block;
-    position: static;
+    display: flex;
+    flex-direction: column;
     min-width: $default-width + 40px;
     max-width: $default-width + 40px;
-    //overflow-x: hidden;
-    //overflow-y: auto;
     border-radius: $default-border-radius;
     margin-top: 10px;
     z-index: 15px;
     box-shadow: 0px 0px 2px $shadow-color;
-    //min-height: 210px;
+    // Uncomment this if you want dropdown list to be of contrained size and see scroll bar
+    //overflow-x: hidden;
+    //overflow-y: auto;
     //max-height: 210px;
-}
 
-.options{
-    display: block;
-    padding: $default-vertical-padding $default-horizontal-padding;
-    user-select: none;
-    &:hover{
-        background-color: $option-hover-background;
-        cursor: pointer;
+    // Applied to all set of options
+    .options{
+        display: block;
+        padding: $default-vertical-padding $default-horizontal-padding;
+        user-select: none;
+        &:hover{
+            background-color: $option-hover-background;
+            cursor: pointer;
+        }
     }
-}
-
-.selected{
-    font-weight: bold;
-}
-
-.disabled {
-    color: $disabled-option-color;
-    &:hover{
-        cursor: not-allowed;
+    // Selected option properties are specified here
+    .selected{
+        font-weight: bold;
     }
-}
-
-.tag-input{
-    width: 50%;
+    // Disabled option properties are specified here
+    .disabled {
+        color: $disabled-option-color;
+        &:hover{
+            cursor: not-allowed;
+        }
+    }
 }

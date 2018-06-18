@@ -1,3 +1,4 @@
+// Applied for selection box component
 .root{
     display: flex;
     border: 1px solid $default-box-color;
@@ -10,17 +11,17 @@
         cursor: pointer;
         border-color: $box-color-hover;
     }
-
+    // Applied for div containing => input and tag component
     .container{
         display: flex;
         min-width: $default-width;
         max-width: $default-width;
         flex-wrap: wrap;
-
+        // Applied for tags
         .tag-section{
             justify-content: flex-start;
         }
-    
+        // Applied for input field
         .input-section{
             width: 50%;
             .input-box{
@@ -28,13 +29,25 @@
                 border: none;
                 padding: 10px 5px;
                 border-radius: $default-border-radius;
-
                 &:hover{
                     cursor: pointer;
                 }
             }
         }
+
+        // Without tag section, input field section can be 100%
+        .without-tag-section{
+            width: 100%;
+        }
+        // With tag section
+        .with-tag-section{
+            width: 1px;
+            .input-box{
+                width: 1%;
+            }
+        }
     }
+    // Applied for dropdown | expand_more icon
     .icon{
         margin-right: 0px;
         img{

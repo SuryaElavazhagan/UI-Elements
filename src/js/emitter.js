@@ -1,14 +1,3 @@
-function broadcast(_componentTag, eventName, params) {
-  this.$children.forEach(child => {
-    var name = child.$options._componentTag;
-
-    if (name === _componentTag) {
-      child.$emit.apply(child, [eventName].concat(params));
-    } else {
-      broadcast.apply(child, [_componentTag, eventName].concat([params]));
-    }
-  });
-}
 export default {
   methods: {
     dispatch(_componentTag, eventName, params) {
@@ -25,9 +14,6 @@ export default {
       if (parent) {
         parent.$emit.apply(parent, [eventName].concat(params));
       }
-    },
-    broadcast(_componentTag, eventName, params) {
-      broadcast.call(this, _componentTag, eventName, params);
     }
   }
 };

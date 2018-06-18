@@ -1,29 +1,33 @@
+// Tag wrapper class
 .wrapper{
     display: inline-block;
     margin-bottom: 5px;
-}
 
-.tag{
-    background-color: $tag-bg-color;
-    border-radius: $default-border-radius;
-    min-height: 23px;
-    position: relative;
-    padding: 5px;
-    margin: 5px;
-}
+    // Tag background and other properties are applied here
+    .tag{
+        background-color: $tag-bg-color;
+        border-radius: $default-border-radius;
+        min-height: 23px;
+        position: relative;
+        padding: 5px;
+        margin: 5px;
 
-.highlight-border{
-    border: 1px solid grey;
-}
-
-.message{
-    display: inline;
-}
-
-.clear-tag{
-    position: relative;
-    top: 6px;
-    &:hover{
-        cursor: pointer;
+        // To make <p> inline
+        .message{
+            display: inline;
+        }
+        
+        // Applied to delete icon in the tag
+        .clear-tag{
+            position: relative;
+            top: 6px;
+            &:hover{
+                cursor: pointer;
+            }
+        }
+    }
+    // Applied when the tag is about to be deleted
+    .highlight-border{
+        border: 1px solid grey;
     }
 }

@@ -1,8 +1,8 @@
 <template>
   <div id="app">
-    <h1>Basic Select</h1>
+    <!--<h1>Basic Select</h1>
     
-    <z-select placeholder="This is basic select" v-model="basicSelectionBox" tab-index="0">
+    <z-select placeholder="This is basic select" v-model="basicSelectionBox">
       <z-options v-for="(option , index) in options"
                 :key="index"
                 :label="option.label"
@@ -11,7 +11,7 @@
 
     <h1>Multiple Select</h1>
     
-    <z-select placeholder="This is Multiple select" v-model="multiSelectionBox" multiple tab-index="2">
+    <z-select placeholder="This is Multiple select" v-model="multiSelectionBox" multiple>
       <z-options v-for="(option , index) in options"
                 :key="index"
                 :label="option.label"
@@ -19,7 +19,7 @@
     </z-select>
     <h1>Disabled options</h1>
     
-    <z-select placeholder="Some options are disabled here" v-model="disabledOptionsBox" tab-index="1">
+    <z-select placeholder="Some options are disabled here" v-model="disabledOptionsBox">
       <z-options v-for="(option , index) in options"
                 :key="index"
                 :label="option.label"
@@ -48,7 +48,7 @@
 
     <h1>Grouped Multiple Select</h1>
     
-    <z-select placeholder="This is Grouped Multiple select" v-model="multiSelectGroupedBox" multiple collapsetags tab-index="3">
+    <z-select placeholder="This is Grouped Multiple select" v-model="multiSelectGroupedBox" multiple collapsetags>
       <z-options v-for="(option , index) in options"
                 :key="index"
                 :label="option.label"
@@ -62,7 +62,8 @@
                 :key="index"
                 :label="option.label"
                 :value="option.value"/>
-    </z-select>
+    </z-select>-->
+    
   </div>
 </template>
 
