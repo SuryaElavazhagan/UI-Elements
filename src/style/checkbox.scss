@@ -1,0 +1,19 @@
+.root{
+    display: inline-block;
+    flex-wrap: wrap;
+    padding: 5px;
+    cursor: pointer;
+    .z-checkbox{
+        display: inline-block;
+        border: 1px solid grey;
+        border-radius: 3px;
+        width: 15px;
+        height: 15px;
+        
+    }
+    .label{
+        display: inline-block;
+        margin-left: 5px;
+        cursor: pointer;
+    }
+}
