@@ -2,7 +2,7 @@
     <div class="wrapper">
         <span class="tag" :class="{ 'highlight-border' : needtodelete }">
             <p class="message" :class="{'underline' : expandOrShrink}">{{ message }}</p>
-            <img v-if="!noclose" class="clear-tag" src="../assets/close_circle.png" @click.stop="$emit('remove', message)"/>
+            <img v-if="!noclose" class="clear-tag" src="../../assets/close_circle.png" @click.stop="$emit('remove', message)"/>
         </span>
     </div>
 </template>
@@ -30,8 +30,8 @@ export default {
 
 <style lang="scss" scoped>
 
-@import "../style/partials/_variables";
-@import "../style/tags";
+@import "../../style/partials/_variables";
+@import "../../style/tags";
 
 .underline{
     &:hover{

@@ -70,7 +70,7 @@
 
 <script>
 
-import {clickOutside} from '../js/clickoutside.js'
+import {clickOutside} from '../../js/clickoutside.js'
 import ZTag from './ZTag.vue'
 import ZOptions from './ZOptions.vue'
 
@@ -341,10 +341,10 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 
-@import "../style/partials/_variables";
-@import "../style/combobox";
+@import "../../style/partials/_variables";
+@import "../../style/combobox";
 
 .selectbox{
     display: inline-block;

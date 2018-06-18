@@ -64,21 +64,25 @@
                 :value="option.value"/>
     </z-select>-->
     
+  <z-check-box label="Hello Vue!"/>
   </div>
 </template>
 
 <script>
 
-import ZSelect from './components/ZSelect.vue'
-import ZOptions from './components/ZOptions.vue'
-import ZTag from './components/ZTag.vue'
+import ZSelect from './components/ZDropDown/ZSelect.vue'
+import ZOptions from './components/ZDropDown/ZOptions.vue'
+import ZTag from './components/ZDropDown/ZTag.vue'
+
+import ZCheckBox from './components/ZCheckBox/CheckBox.vue'
 
 export default {
   name: 'app',
   components: {
     ZSelect,
     ZOptions,
-    ZTag
+    ZTag,
+    ZCheckBox
   },
   data(){
     return {

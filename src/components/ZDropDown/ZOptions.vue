@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import Emitter from '../js/emitter.js'
+import Emitter from '../../js/emitter.js'
 
 export default {
     name : 'ZOption',
@@ -80,10 +80,9 @@ export default {
 }
 </script>
 
-<style lang="scss">
-
-@import "../style/partials/_variables";
-@import "../style/selectbox";
+<style lang="scss" scoped>
+@import "../../style/partials/_variables";
+@import "../../style/selectbox";
 
 
 .hovered{
