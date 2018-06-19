@@ -1,7 +1,22 @@
+<!--
+    Usage  : 
+     <checkbox label="your-label" value="your-value">
+    
+    Props : 
+        disabled : Boolean
+    
+    v-model :
+        binds with boolean value i.e., whether the box is checked or not
+    
+    Events : @change
+                    params : status : Boolean
+                             value : Bounded value
+        
+-->
 <template>
   <div class="checkbox">
     <label :class="{'disabled' :  disabled}">
-      <input type="checkbox" :disabled="disabled" v-bind:checked="checked" @change="onChange" >
+      <input type="checkbox" :disabled="disabled" :checked="checked" :value="value" @change="onChange">
       <span class="custom-checkbox">
         <i class="icon-check"></i>
       </span>
@@ -20,21 +35,16 @@ export default {
             default : false
         },
         checked : Boolean,
-        value : Object | String
+        value : Object
     },
     model : {
         prop : 'checked',
         event : 'change'
     },
-    methods: {
+    methods : {
         onChange(event){
             let status = event.target.checked
-            this.$emit('change' ,  status, this.value)
-            this.$nextTick(function(){
-               if(this.$parent.$options._componentTag === "z-check-box-group"){
-                    this.$parent.onValueUpdate(status , this.value)
-                }
-            })
+            this.$emit('change', status,this.value)
         }
     }
 }

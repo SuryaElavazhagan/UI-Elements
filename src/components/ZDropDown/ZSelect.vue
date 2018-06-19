@@ -11,6 +11,13 @@
             disabled : Boolean
             multiple : Boolean
             collapsetags : Boolean
+        
+        v-model : 
+            Type : Array | Object
+            Binds with current value
+
+        Event : 
+        @change : param => changedValue
 -->
 <template>
     <div class="selectbox"

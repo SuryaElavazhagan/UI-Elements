@@ -66,15 +66,14 @@
   <h1>Basic checkbox</h1>
   <z-check-box label="Hello Vue!" :value="options[0]" v-model="checkbox"/>
 
-  <h1>Disabled checkbox</h1>
-  <z-check-box label="Hello Vue!" disabled v-model="disableddcheckbox"/>
+  <h1>Disabled Checkbox</h1>
+  <z-check-box label="Hello Vue!" disabled :value="options[1]"/>
 
   <h1>Grouped Checkbox</h1>
-  <z-check-box-group v-model="open">
+  <z-check-box-group>
     <z-check-box label="Hello World" :value="options[0]"/>
     <z-check-box label="Hello World" :value="options[1]"/>
   </z-check-box-group>
-
   </div>
 </template>
 
@@ -100,7 +99,7 @@ export default {
     return {
       checkbox : false,
       disableddcheckbox : false,
-      open : [],
+      checkedNames : [],
       basicSelectionBox : '',
       disabledOptionsBox : '',
       disabledBoxDefaultOption : 'Default option',
