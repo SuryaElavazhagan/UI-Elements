@@ -1,19 +1,72 @@
-.root{
-    display: inline-block;
-    flex-wrap: wrap;
-    padding: 5px;
+.checkbox {
+  display: inline-block;
+  padding: 5px;
+
+  label {
+    display:block;
+    position:relative;
     cursor: pointer;
-    .z-checkbox{
-        display: inline-block;
-        border: 1px solid grey;
-        border-radius: 3px;
-        width: 15px;
-        height: 15px;
-        
-    }
-    .label{
-        display: inline-block;
-        margin-left: 5px;
-        cursor: pointer;
-    }
+  }
+  .disabled{
+      cursor: not-allowed;
+      color: grey;
+
+      .custom-checkbox{
+          background-color: grey;
+      }
+
+      input[type="checkbox"]:checked + .custom-checkbox{
+        border-color: grey;
+      }
+  }
+  input[type="checkbox"]{
+    position:absolute;
+    top:0;
+    left:0;
+    visibility:hidden;
+  }
+
+  // .custom-checkbox and .custom-radio must come immediately after the input element
+  .custom-checkbox{
+    display:inline-block;
+    vertical-align:top;
+    margin:0 5px 0 0;
+    width:20px;
+    height:20px;
+    border:1px solid #ddd;
+    position:relative;
+  }
+}
+
+.checkbox {
+  .custom-checkbox {
+    border-radius:5px;
+    background:#2095F0;
+    transition:box-shadow 180ms ease;
+    box-shadow:inset 0 0 0 12px #fff;
+    top:-2px;
+  }
+
+  .icon-check {
+    width:12px;
+    height:12px;
+    background-size:cover;
+    position:absolute;
+    top:3px;
+    left:3px;
+    transform:scale(0);
+    transition:all 180ms ease;
+  }
+
+  input[type="checkbox"]:checked + .custom-checkbox {
+    border-color:#2095F0;
+    box-shadow:none;
+    .icon-check { transform:scale(1); }
+  }
+}
+
+// SVG check icon
+.icon-check {
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20baseProfile%3D%22tiny%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2216%22%20height%3D%2216%22%3E%3Cpath%20fill%3D%22%23fff%22%20d%3D%22M13.483%201.992l-7.186%207.066-3.778-3.715-2.518%202.475%205.037%204.954%201.259%201.237%209.704-9.541-2.518-2.476z%22/%3E%3C/svg%3E');
+  background-repeat: no-repeat;
 }

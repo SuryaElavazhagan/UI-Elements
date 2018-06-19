@@ -63,8 +63,18 @@
                 :label="option.label"
                 :value="option.value"/>
     </z-select>-->
-    
-  <z-check-box label="Hello Vue!"/>
+  <h1>Basic checkbox</h1>
+  <z-check-box label="Hello Vue!" :value="options[0]" v-model="checkbox"/>
+
+  <h1>Disabled checkbox</h1>
+  <z-check-box label="Hello Vue!" disabled v-model="disableddcheckbox"/>
+
+  <h1>Grouped Checkbox</h1>
+  <z-check-box-group v-model="open">
+    <z-check-box label="Hello World" :value="options[0]"/>
+    <z-check-box label="Hello World" :value="options[1]"/>
+  </z-check-box-group>
+
   </div>
 </template>
 
@@ -75,6 +85,7 @@ import ZOptions from './components/ZDropDown/ZOptions.vue'
 import ZTag from './components/ZDropDown/ZTag.vue'
 
 import ZCheckBox from './components/ZCheckBox/CheckBox.vue'
+import ZCheckBoxGroup from './components/ZCheckBox/ZCheckBoxGroup.vue'
 
 export default {
   name: 'app',
@@ -82,11 +93,14 @@ export default {
     ZSelect,
     ZOptions,
     ZTag,
-    ZCheckBox
+    ZCheckBox,
+    ZCheckBoxGroup
   },
   data(){
     return {
-      open : true,
+      checkbox : false,
+      disableddcheckbox : false,
+      open : [],
       basicSelectionBox : '',
       disabledOptionsBox : '',
       disabledBoxDefaultOption : 'Default option',
