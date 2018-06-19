@@ -1,25 +1,34 @@
-.checkbox {
+.checkbox,
+.radio {
   display: inline-block;
   padding: 5px;
+
+  .disabled{
+    cursor: not-allowed;
+    color: grey;
+
+    .custom-checkbox{
+        background-color: grey;
+    }
+
+    input[type="checkbox"]:checked + .custom-checkbox{
+      border-color: grey;
+    }
+
+    input[type="radio"]:checked + .custom-radio {
+      border-color:grey;
+      background:grey;
+      box-shadow:inset 0 0 0 4px #fff;
+    }
+  }
 
   label {
     display:block;
     position:relative;
     cursor: pointer;
   }
-  .disabled{
-      cursor: not-allowed;
-      color: grey;
-
-      .custom-checkbox{
-          background-color: grey;
-      }
-
-      input[type="checkbox"]:checked + .custom-checkbox{
-        border-color: grey;
-      }
-  }
-  input[type="checkbox"]{
+  input[type="checkbox"],
+  input[type="radio"] {
     position:absolute;
     top:0;
     left:0;
@@ -27,12 +36,14 @@
   }
 
   // .custom-checkbox and .custom-radio must come immediately after the input element
-  .custom-checkbox{
+  .custom-checkbox,
+  .custom-radio {
     display:inline-block;
     vertical-align:top;
-    margin:0 5px 0 0;
-    width:20px;
-    height:20px;
+    margin:0 6px 0 0;
+    width:18px;
+    height:18px;
+    background:#fff;
     border:1px solid #ddd;
     position:relative;
   }
@@ -40,7 +51,7 @@
 
 .checkbox {
   .custom-checkbox {
-    border-radius:5px;
+    border-radius:2px;
     background:#2095F0;
     transition:box-shadow 180ms ease;
     box-shadow:inset 0 0 0 12px #fff;
@@ -64,6 +75,23 @@
     .icon-check { transform:scale(1); }
   }
 }
+.radio {
+  .custom-radio {
+    border-radius:18px;
+    background:#2095F0;
+    box-shadow:inset 0 0 0 12px #fff;
+    transition:all 180ms ease;
+    top:-2px;
+  }
+
+  input[type="radio"]:checked + .custom-radio {
+    border-color:#2095F0;
+    background:#2095F0;
+    box-shadow:inset 0 0 0 4px #fff;
+  }
+}
+
+
 
 // SVG check icon
 .icon-check {

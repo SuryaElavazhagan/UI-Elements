@@ -44,13 +44,17 @@ export default {
     methods : {
         onChange(event){
             let status = event.target.checked
-            this.$emit('change', status,this.value)
+            if(this.$parent.$options._componentTag === "z-check-box-group"){
+                this.$parent.onValueUpdate(status , this.value)
+            }else{
+                this.$emit('change', status, this.value)
+            }
         }
     }
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 
 @import "../../style/checkbox";
 

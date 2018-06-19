@@ -62,7 +62,7 @@
                 :key="index"
                 :label="option.label"
                 :value="option.value"/>
-    </z-select>-->
+    </z-select>
   <h1>Basic checkbox</h1>
   <z-check-box label="Hello Vue!" :value="options[0]" v-model="checkbox"/>
 
@@ -74,6 +74,13 @@
     <z-check-box label="Hello World" :value="options[0]"/>
     <z-check-box label="Hello World" :value="options[1]"/>
   </z-check-box-group>
+
+  <z-radio-button label="Option 1"/>-->
+
+  <z-checkbox-component label="Surya" :value="options[0]" v-model="checkbox"/>
+  <z-checkbox-component label="Vaibhav" :value="options[1]" v-model="checkbox"/>
+  <z-checkbox-component label="Sidharth" :value="options[2]" v-model="checkbox"/>
+  <z-checkbox-component label="Sunil" :value="options[3]" v-model="checkbox"/>
   </div>
 </template>
 
@@ -86,6 +93,10 @@ import ZTag from './components/ZDropDown/ZTag.vue'
 import ZCheckBox from './components/ZCheckBox/CheckBox.vue'
 import ZCheckBoxGroup from './components/ZCheckBox/ZCheckBoxGroup.vue'
 
+import ZCheckboxComponent from './components/ZCheckBox/ZCheckBox.vue'
+
+import ZRadioButton from './components/ZRadioButton/ZRadio.vue'
+
 export default {
   name: 'app',
   components: {
@@ -93,11 +104,13 @@ export default {
     ZOptions,
     ZTag,
     ZCheckBox,
-    ZCheckBoxGroup
+    ZCheckBoxGroup,
+    ZRadioButton,
+    ZCheckboxComponent
   },
   data(){
     return {
-      checkbox : false,
+      checkbox : [],
       disableddcheckbox : false,
       checkedNames : [],
       basicSelectionBox : '',
