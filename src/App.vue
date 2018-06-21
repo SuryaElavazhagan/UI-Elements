@@ -62,25 +62,25 @@
                 :key="index"
                 :label="option.label"
                 :value="option.value"/>
-    </z-select>
-  <h1>Basic checkbox</h1>
-  <z-check-box label="Hello Vue!" :value="options[0]" v-model="checkbox"/>
+    </z-select>-->
+  <h1>Single radio button</h1>
+  <z-radio-button label="Option 1" :val="options[0]" disabled v-model="radio"/>
 
-  <h1>Disabled Checkbox</h1>
-  <z-check-box label="Hello Vue!" disabled :value="options[1]"/>
+  <h1>Grouped radio button</h1>
+  <z-radio-button label="Option 1" :val="options[0]" v-model="radiobutton"/>
+  <z-radio-button label="Option 2" :val="options[1]" v-model="radiobutton"/>
+  <z-radio-button label="Option 3" :val="options[2]" v-model="radiobutton"/>
+  <z-radio-button label="Option 4" :val="options[3]" v-model="radiobutton"/>
+
+
+  <h1>Single checkbox</h1>
+  <z-checkbox-component label="Sunil" :val="options[3]" v-model="che"/>
 
   <h1>Grouped Checkbox</h1>
-  <z-check-box-group>
-    <z-check-box label="Hello World" :value="options[0]"/>
-    <z-check-box label="Hello World" :value="options[1]"/>
-  </z-check-box-group>
-
-  <z-radio-button label="Option 1"/>-->
-
-  <z-checkbox-component label="Surya" :value="options[0]" v-model="checkbox"/>
-  <z-checkbox-component label="Vaibhav" :value="options[1]" v-model="checkbox"/>
-  <z-checkbox-component label="Sidharth" :value="options[2]" v-model="checkbox"/>
-  <z-checkbox-component label="Sunil" :value="options[3]" v-model="checkbox"/>
+  <z-checkbox-component label="Surya" :val="options[0]" disabled v-model="checkbox"/>
+  <z-checkbox-component label="Vaibhav" :val="options[1]" v-model="checkbox"/>
+  <z-checkbox-component label="Sidharth" :val="options[2]" v-model="checkbox"/>
+  <z-checkbox-component label="Sunil" :val="options[3]" v-model="checkbox"/>
   </div>
 </template>
 
@@ -89,9 +89,6 @@
 import ZSelect from './components/ZDropDown/ZSelect.vue'
 import ZOptions from './components/ZDropDown/ZOptions.vue'
 import ZTag from './components/ZDropDown/ZTag.vue'
-
-import ZCheckBox from './components/ZCheckBox/CheckBox.vue'
-import ZCheckBoxGroup from './components/ZCheckBox/ZCheckBoxGroup.vue'
 
 import ZCheckboxComponent from './components/ZCheckBox/ZCheckBox.vue'
 
@@ -103,13 +100,14 @@ export default {
     ZSelect,
     ZOptions,
     ZTag,
-    ZCheckBox,
-    ZCheckBoxGroup,
     ZRadioButton,
     ZCheckboxComponent
   },
   data(){
     return {
+      radio : true,
+      radiobutton : [],
+      che : '',
       checkbox : [],
       disableddcheckbox : false,
       checkedNames : [],
