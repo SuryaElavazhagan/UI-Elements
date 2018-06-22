@@ -1,10 +1,11 @@
 <template>
-    <div v-if="isFiltered"
+    <div v-show="isFiltered"
         class="options"
         :class="{'disabled' : disabled, 'hovered' : isHovered , 'selected' : isSelected}"
         @click="onClick"
         @mouseover="hoverItem">
-        {{ label }}
+        <p v-if="!created" class="label">{{ label }}</p>
+        <span v-if="created">Create tag: <p class="tag">{{ label }}</p></span>
     </div>
 </template>
 
@@ -27,6 +28,10 @@ export default {
         disabled : {
             type : Boolean,
             default : false
+        },
+        created : {
+            type: Boolean,
+            default : false
         }
     },
     inject : ['select'],
@@ -39,7 +44,7 @@ export default {
         this.select.options.splice(this.select.options.indexOf(this), 1)
     },
     computed : {
-        // Updates the hoverIndex of the parent
+        // Updates the hoverIndex from the parent
         isHovered(){
             let index = this.select.hoverIndex
             let options = this.select.options
@@ -55,16 +60,19 @@ export default {
                 false
         },
         isFiltered(){
+            if(this.created && this.select.filteredOptions.some(option => (option.label.toLowerCase() === this.label.toLowerCase()) && (option !== this))){
+                return false
+            }
             return this.select.filteredOptions.some(option => option === this)
         }
     },
-    watch :{
+    /*watch :{
         isFiltered : function(newValue, oldValue){
             if(oldValue && !newValue){
                 this.select.options.splice(this.select.options.indexOf(this), 1)
             }
         }
-    },
+    },*/
     methods : {
         // Handles 'onmouseover'
         hoverItem() {
@@ -83,7 +91,6 @@ export default {
 <style lang="scss" scoped>
 @import "../../style/partials/_variables";
 @import "../../style/selectbox";
-
 
 .hovered{
     background-color: $option-hover-background;

@@ -53,16 +53,17 @@
                 :key="index"
                 :label="option.label"
                 :value="option.value"/>
-    </z-select>
+    </z-select>-->
     
     <h1>Create own tag</h1>
     
-    <z-select placeholder="Create own tag here" v-model="createTagSelectBox" allow-create>
+    <z-select placeholder="Create own tag here" v-model="createTagSelectBox" allow-create @tagCreated="onTagCreated">
       <z-options v-for="(option , index) in optionCreate"
                 :key="index"
                 :label="option.label"
                 :value="option.value"/>
-    </z-select>-->
+    </z-select>
+    <!--<h1>Hello world</h1>
   <h1>Single radio button</h1>
   <z-radio-button label="Option 1" :val="options[0]" disabled v-model="radio"/>
 
@@ -80,7 +81,7 @@
   <z-checkbox-component label="Surya" :val="options[0]" disabled v-model="checkbox"/>
   <z-checkbox-component label="Vaibhav" :val="options[1]" v-model="checkbox"/>
   <z-checkbox-component label="Sidharth" :val="options[2]" v-model="checkbox"/>
-  <z-checkbox-component label="Sunil" :val="options[3]" v-model="checkbox"/>
+  <z-checkbox-component label="Sunil" :val="options[3]" v-model="checkbox"/>-->
   </div>
 </template>
 
@@ -140,25 +141,30 @@ export default {
         }],
         optionCreate: [{
           value: 'Princeton',
-          label: 'Option1',
+          label: 'Princeton',
           disabled : false
         }, {
           value: 'Project',
-          label: 'Option2',
+          label: 'Project',
           disabled : true
         }, {
           value: 'Oxford',
-          label: 'Option3',
+          label: 'Oxford',
           disbaled : false
         }, {
           value: 'Duke',
-          label: 'Option4',
+          label: 'Duke',
           disbaled : true
         }, {
           value: 'Anna University',
-          label: 'Option5',
+          label: 'Anna University',
           disbaled : false
         }]
+    }
+  },
+  methods : {
+    onTagCreated(){
+      alert('Perform your AJAX call here!')
     }
   }
 }

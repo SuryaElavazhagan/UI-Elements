@@ -6,8 +6,10 @@
     max-width: $default-width + 40px;
     border-radius: $default-border-radius;
     margin-top: 10px;
+    position: absolute;
     z-index: 15px;
     box-shadow: 0px 0px 2px $shadow-color;
+    background-color: #fff;
     // Uncomment this if you want dropdown list to be of contrained size and see scroll bar
     //overflow-x: hidden;
     //overflow-y: auto;
@@ -21,6 +23,15 @@
         &:hover{
             background-color: $option-hover-background;
             cursor: pointer;
+        }
+
+        .label{
+            display: inline;
+        }
+
+        .tag{
+            display: inline;
+            font-size: 14px;
         }
     }
     // Selected option properties are specified here

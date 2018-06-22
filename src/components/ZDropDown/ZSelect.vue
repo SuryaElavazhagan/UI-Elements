@@ -69,7 +69,7 @@
             </div>
         </div>
         <div v-if="isOpen && !disabled" class="list">
-            <z-options v-if="allowCreate && (showTypingData && createdTag.length > 0)" :value="createdTag" :label="createdTag"/>
+            <z-options v-if="allowCreate && (showTypingData && createdTag.length > 0)" created :value="{}" :label="createdTag"/>
             <slot></slot>
         </div>
     </div>
@@ -136,6 +136,7 @@ export default {
             else
                 return this.placeholder
         },
+        // Filtering logic
         filteredOptions(){
             return this.options.filter(option => option.label.toLowerCase().indexOf(this.createdTag.toLowerCase()) >= 0)
         }
@@ -169,16 +170,10 @@ export default {
             if(newValue.length > 0)
             {
                 this.showTypingData = true
-            }
-            if(newValue !== ""){
                 this.isOpen = true
-            } else{
+            }else{
                 this.isOpen = false
             }
-            if(this.options.some(option => option.label === newValue)){
-                this.showTypingData = false
-            }else{
-                this.showTypingData = true}
         }
     },
     methods : {
@@ -191,16 +186,16 @@ export default {
             switch(event.keyCode)
             {
                 // For Enter key
-                case 13 :if(this.hoverIndex >= 0 && this.isOpen && !(this.allowCreate && this.createdTag.length > 0))
+                case 13 :if(this.hoverIndex >= 0 && this.isOpen)
                         {
                             this.onOptionSelected(this.options[this.hoverIndex])
-                        }else if(this.allowCreate && this.createdTag.length > 0){
+                        }else if(this.allowCreate && this.createdTag.length > 0 && this.hoverIndex < 0){
                             this.onOptionSelected(this.options.filter(option => option.label == this.createdTag)[0])    
-                            this.createdTag = ""
                         }
                         else{
                             this.isOpen = !this.isOpen
                         }
+                        this.createdTag = ""
                         break;
                 // For arrow down
                 case 40 :if(this.isOpen) 
@@ -212,6 +207,7 @@ export default {
                 // For arrow up
                 case 38 : this.navigate('up')
                         break;
+                // For Backspace key
                 case 8: if(this.allowCreate && this.selectedOptionsCount > 0 && this.createdTag.length == 0){
                             if(this.backspaceCount == 0)
                             {
@@ -278,6 +274,10 @@ export default {
                 this.selectedOptions.splice(index, 1)
                 this.selectedOptionsCache.splice(index , 1)
             }
+
+            if(option.created){
+                this.$emit('tagCreated', option)
+            }
             this.hoverIndex = -1
         },
         // Triggered on clicking 'closing tag' button
@@ -306,21 +306,21 @@ export default {
             let prevHoverIndex = (this.hoverIndex < 0) ? (options.length - 1) : (this.hoverIndex - 1)
             // Prevents hovering disabled item, when using arrow keys
             // Simply it returns next index on pressing down arrows
-            let getNextOption = function(){
+            let getNextOption = () => {
                 for(let i = nextHoverIndex; i < options.length; i = (i + 1) % options.length){
-                    if(!options[i].disabled)                    
+                    if(!options[i].disabled && this.filteredOptions.includes(options[i]))      
                         return i
                 }
             }  
 
             // Need better optimized code for this function
-            let getPrevOption = function(){
+            let getPrevOption = () => {
                 for(let i = prevHoverIndex; i < options.length; i = (i - 1) % options.length){
                     if(i < 0)
                     {
                         i = options.length - 1
                     }
-                    if(!options[i].disabled)                    
+                    if(!options[i].disabled && this.filteredOptions.includes(options[i]))
                         return i
                 }
             }  
@@ -352,6 +352,7 @@ export default {
 
 @import "../../style/partials/_variables";
 @import "../../style/combobox";
+@import "../../style/selectbox";
 
 .selectbox{
     display: inline-block;
